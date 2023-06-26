@@ -1,0 +1,8 @@
+* {
+  font-family: cursive;
+}
+
+.custom-container {
+  min-width: 600px;
+  padding-bottom: 40px;
+}

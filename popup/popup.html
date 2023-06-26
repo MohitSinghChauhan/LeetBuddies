@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>LeetCode Buddies Leaderboard</title>
+    <link rel="stylesheet" href="tailwind-build.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
+        <div class="custom-container bg-white rounded p-4 max-w-md w-full">
+            <h1 class="text-2xl text-center mb-4">LeetCode Buddies Leaderboard</h1>
+            <div class="flex items-center mb-4">
+                <input type="text" id="searchInput" placeholder="Search username"
+                    class="rounded-l px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 border-solid border-2">
+                <button id="searchButton"
+                    class="bg-blue-500 text-white rounded-r px-4 py-2 focus:outline-none hover:bg-blue-600">Search</button>
+            </div>
+            <div id="friendsList"></div>
+            <button id="sortButton"
+                class="bg-blue-500 text-white rounded px-4 py-2 self-end mt-4 focus:outline-none hover:bg-blue-600">Sort
+                by Total Problems</button>
+        </div>
+    </div>
+</body>
+
+</html>
