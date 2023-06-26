@@ -39,6 +39,11 @@ LeetBuddies is a Chrome extension that helps you keep track of your friends' pro
 ![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss3.png?raw=true)
 ![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss4.png?raw=true)
 
+## Future Goals:
+- [ ] Search Users by their Name also.
+- [ ] Publish on Chrome Web Store.
+
+
 ## Credits
 - LeetCode Buddies is developed and maintained by [Mohit Singh Chauhan](https://github.com/MohitSinghChauhan).
 - Special thanks to the creators of the [LeetCode Stats API](https://leetcode-stats-api.herokuapp.com) and [LeetCode-Stats-Card](https://github.com/JacobLinCool/LeetCode-Stats-Card) for providing the data used in this extension.
