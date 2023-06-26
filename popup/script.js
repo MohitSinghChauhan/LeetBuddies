@@ -173,4 +173,8 @@ document.addEventListener('DOMContentLoaded', function () {
       searchInput.value = '';
     }
   });
+
+  // Initial rendering of friends list from local storage
+  const friends = JSON.parse(localStorage.getItem('friends')) || [];
+  renderFriendsList(friends);
 });
