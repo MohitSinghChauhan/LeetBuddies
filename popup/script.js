@@ -134,4 +134,43 @@ document.addEventListener('DOMContentLoaded', function () {
   function sortFriendsByTotalProblems(friends) {
     return friends.sort((a, b) => b.totalSolved - a.totalSolved);
   }
+
+  // Event listener for search input
+  searchInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      const username = searchInput.value.trim();
+      if (username !== '') {
+        fetchUserData(username)
+          .then((data) => {
+            if (data.status === 'success') {
+              const friend = {
+                username: username,
+                easySolved: data.easySolved,
+                mediumSolved: data.mediumSolved,
+                hardSolved: data.hardSolved,
+                totalSolved: data.totalSolved,
+                totalEasy: data.totalEasy,
+                totalMedium: data.totalMedium,
+                totalHard: data.totalHard,
+                totalQuestions: data.totalQuestions,
+              };
+
+              const friends = JSON.parse(localStorage.getItem('friends')) || [];
+              friends.push(friend);
+              localStorage.setItem('friends', JSON.stringify(friends));
+
+              renderFriendsList(friends);
+              showSuccessToast('User successfully added!');
+            } else {
+              showErrorToast(data.message);
+            }
+          })
+          .catch((error) => {
+            showErrorToast('An error occurred while fetching user data.');
+            console.error(error);
+          });
+      }
+      searchInput.value = '';
+    }
+  });
 });
