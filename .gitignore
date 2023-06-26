@@ -1,0 +1,5 @@
+# Ignore Node.js dependencies
+node_modules/
+
+# tailwindCSS file
+popup/styles.css
