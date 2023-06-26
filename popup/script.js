@@ -109,4 +109,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     return friendItem;
   }
+
+  // Function to render friends list
+  function renderFriendsList(friends) {
+    friendsList.innerHTML = '';
+
+    friends.forEach((friend, index) => {
+      const friendItem = renderFriendData(friend, index);
+      friendsList.appendChild(friendItem);
+    });
+  }
 });
