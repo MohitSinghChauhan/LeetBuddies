@@ -4,7 +4,7 @@
   "description": "\"LeetCode Buddies\" is a Chrome extension designed to help users keep track of their friends' progress on LeetCode, a popular platform for practicing coding interview questions. The extension serves as a leaderboard that displays information about your friends' problem-solving achievements on LeetCode.",
   "main": "popup/popup.html",
   "scripts": {
-    "buid:tailwind": "tailwindcss build popup/tailwind.css -o popup/tailwind-build.css"
+    "build:tailwind": "tailwindcss build popup/tailwind.css -o popup/tailwind-build.css"
   },
   "repository": {
     "type": "git",
