@@ -2,4 +2,4 @@
 node_modules/
 
 # tailwindCSS file
-popup/styles.css
+popup/tailwind-build.css
