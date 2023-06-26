@@ -119,4 +119,19 @@ document.addEventListener('DOMContentLoaded', function () {
       friendsList.appendChild(friendItem);
     });
   }
+
+  // Event listener for sort button
+  sortButton.addEventListener('click', function () {
+    const friends = JSON.parse(localStorage.getItem('friends')) || [];
+    const sortedFriends = sortFriendsByTotalProblems(friends);
+    renderFriendsList(sortedFriends);
+
+    // Update the local storage with the sorted data
+    localStorage.setItem('friends', JSON.stringify(sortedFriends));
+  });
+
+  // Function to sort friends by total problems solved
+  function sortFriendsByTotalProblems(friends) {
+    return friends.sort((a, b) => b.totalSolved - a.totalSolved);
+  }
 });
