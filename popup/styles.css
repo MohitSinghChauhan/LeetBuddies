@@ -6,3 +6,23 @@
   min-width: 600px;
   padding-bottom: 40px;
 }
+
+
+.box {
+  display: none;
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  left: 50px;
+}
+
+a:hover + .box,
+.box:hover {
+  display: block;
+  position: absolute;
+  z-index: 100;
+}
+
+.fa-trash {
+  color: rgba(224, 11, 11, 0.622);
+}
