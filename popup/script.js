@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const friendsList = document.getElementById('friendsList');
   const sortButton = document.getElementById('sortButton');
   const searchButton = document.getElementById('searchButton');
+  const refreshButton = document.getElementById('refreshButton');
+  const refreshModal = document.getElementById('refreshModal');
 
   // Function to show an error toast notification
   const showErrorToast = (message) => {
@@ -180,6 +182,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // Event listener for search button (click)
   searchButton.addEventListener('click', async () => {
     handleSearch();
+  });
+
+  // Event listener for refresh button
+  refreshButton.addEventListener('click', async () => {
+    const friends = JSON.parse(localStorage.getItem('friends')) || [];
+    const updatedFriends = [];
+
+    refreshModal.classList.add('show');
+
+    for (const friend of friends) {
+      const data = await fetchUserData(friend.username);
+
+      if (data.status === 'success') {
+        const updatedFriend = {
+          username: friend.username,
+          easySolved: data.easySolved,
+          mediumSolved: data.mediumSolved,
+          hardSolved: data.hardSolved,
+          totalSolved: data.totalSolved,
+          totalEasy: data.totalEasy,
+          totalMedium: data.totalMedium,
+          totalHard: data.totalHard,
+          totalQuestions: data.totalQuestions,
+        };
+
+        updatedFriends.push(updatedFriend);
+      } else {
+        showErrorToast(data.message);
+      }
+    }
+
+    localStorage.setItem('friends', JSON.stringify(updatedFriends));
+    renderFriendsList(updatedFriends);
+    showSuccessToast('Leaderboard successfully refreshed!');
+
+    refreshModal.classList.remove('show');
   });
 
   // Initial rendering of friends list from local storage

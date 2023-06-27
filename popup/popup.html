@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="../dist/css/iziToast.min.css">
     <script src="../dist/js/iziToast.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="script.js"></script>
 </head>
 
@@ -28,6 +28,23 @@
             <button id="sortButton"
                 class="bg-blue-500 text-white rounded px-4 py-2 self-end mt-4 focus:outline-none hover:bg-blue-600">Sort
                 by Total Problems</button>
+            <button id="refreshButton"
+                class="bg-blue-500 text-white rounded px-4 py-2 self-end mt-4 focus:outline-none hover:bg-blue-600">Refresh
+                &nbsp;<i class="fa fa-refresh" aria-hidden="true"></i> </button>
+
+            <div id="refreshModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Refreshing Leaderboard...</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="loader"></div>
+                        <p>LeetCode buddies,<br> Get ready for the leaderboard shuffle!<br> The race for first place is
+                            on. Stay tuned!</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </body>
