@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
   const friendsList = document.getElementById('friendsList');
   const sortButton = document.getElementById('sortButton');
+  const searchButton = document.getElementById('searchButton');
 
   // Function to show an error toast notification
   const showErrorToast = (message) => {
@@ -133,42 +134,52 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('friends', JSON.stringify(sortedFriends));
   });
 
-  // Event listener for search input
+  // Function to handle the search action
+  const handleSearch = async () => {
+    const username = searchInput.value.trim();
+    if (username !== '') {
+      try {
+        const data = await fetchUserData(username);
+        if (data.status === 'success') {
+          const friend = {
+            username: username,
+            easySolved: data.easySolved,
+            mediumSolved: data.mediumSolved,
+            hardSolved: data.hardSolved,
+            totalSolved: data.totalSolved,
+            totalEasy: data.totalEasy,
+            totalMedium: data.totalMedium,
+            totalHard: data.totalHard,
+            totalQuestions: data.totalQuestions,
+          };
+
+          const friends = JSON.parse(localStorage.getItem('friends')) || [];
+          friends.push(friend);
+          localStorage.setItem('friends', JSON.stringify(friends));
+
+          renderFriendsList(friends);
+          showSuccessToast('User successfully added!');
+        } else {
+          showErrorToast(data.message);
+        }
+      } catch (error) {
+        showErrorToast('An error occurred while fetching user data.');
+        console.error(error);
+      }
+    }
+    searchInput.value = '';
+  };
+
+  // Event listener for search input (keypress)
   searchInput.addEventListener('keypress', async (e) => {
     if (e.key === 'Enter') {
-      const username = searchInput.value.trim();
-      if (username !== '') {
-        try {
-          const data = await fetchUserData(username);
-          if (data.status === 'success') {
-            const friend = {
-              username: username,
-              easySolved: data.easySolved,
-              mediumSolved: data.mediumSolved,
-              hardSolved: data.hardSolved,
-              totalSolved: data.totalSolved,
-              totalEasy: data.totalEasy,
-              totalMedium: data.totalMedium,
-              totalHard: data.totalHard,
-              totalQuestions: data.totalQuestions,
-            };
-
-            const friends = JSON.parse(localStorage.getItem('friends')) || [];
-            friends.push(friend);
-            localStorage.setItem('friends', JSON.stringify(friends));
-
-            renderFriendsList(friends);
-            showSuccessToast('User successfully added!');
-          } else {
-            showErrorToast(data.message);
-          }
-        } catch (error) {
-          showErrorToast('An error occurred while fetching user data.');
-          console.error(error);
-        }
-      }
-      searchInput.value = '';
+      handleSearch();
     }
+  });
+
+  // Event listener for search button (click)
+  searchButton.addEventListener('click', async () => {
+    handleSearch();
   });
 
   // Initial rendering of friends list from local storage
