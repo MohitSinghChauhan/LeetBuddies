@@ -50,6 +50,11 @@ LeetBuddies is a Chrome extension that helps you keep track of your friends' pro
 - This [StackOverFlow Answer](https://stackoverflow.com/questions/2117046/how-to-show-live-preview-in-a-small-popup-of-linked-page-on-mouse-over-on-link) is life-saver.
 - Our well-known friend ChatGPT.
 - For this `Readme` inspiration comes from [A Beginners Guide to writing a Kickass README ✍](https://gist.github.com/akashnimare/7b065c12d9750578de8e705fb4771d2f)
+
+## 🔗 Let's Connect
+[![linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/i-mohit-singh-chauhan/)
+[![twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/MohitSChauhan)
+
 ## License
 This project is licensed under the [MIT License](LICENSE).
 MIT © [Mohit Singh Chauhan](https://github.com/MohitSinghChauhan)

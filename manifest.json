@@ -2,11 +2,12 @@
     "manifest_version": 2,
     "name": "LeetBuddies",
     "version": "1.0",
-    "description": "\"LeetCode Buddies\" is a Chrome extension designed to help users keep track of their friends' progress on LeetCode, a popular platform for practicing coding interview questions. The extension serves as a leaderboard that displays information about your friends' problem-solving achievements on LeetCode.",
+    "description": "An extension to help you to keep track of your friends' problem-solving achievements on LeetCode by displaying the leaderboard.",
     "icons": {
-      "16": "assets/icons/icon.png",
-      "48": "assets/icons/icon.png",
-      "128": "assets/icons/icon.png"
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
     },
     "permissions": ["activeTab"],
     "browser_action": {
