@@ -76,7 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
       'bg-white',
       'rounded',
       'p-2',
-      'mb-2'
+      'mb-2',
+      'border-2',
+      'border-gray-200',
     );
 
     const friendName = document.createElement('a');
