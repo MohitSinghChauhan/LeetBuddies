@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshButton = document.getElementById('refreshButton');
   const refreshModal = document.getElementById('refreshModal');
   const toggleDarkModeButton = document.getElementById('toggleDarkMode');
-  
+  const themeSelect = document.getElementById('theme');
+  const extensionSelect = document.getElementById('extension');
 
   // Function to toggle dark mode
   const toggleDarkMode = () => {
@@ -91,8 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const hoverModal = document.createElement('div');
     hoverModal.classList.add('box');
 
+    const theme = themeSelect.value;
+    const extension = extensionSelect.value;
+
     const iframe = document.createElement('iframe');
-    iframe.src = `https://leetcard.jacoblin.cool/${friend.username}?theme=unicorn&font=Fira%20Code&ext=heatmap`;
+    iframe.src = `https://leetcard.jacoblin.cool/${friend.username}?theme=${theme}&font=Fira%20Code&ext=${extension}`;
     iframe.width = '400px';
     iframe.height = '100%';
     iframe.style.border = 'none';
@@ -247,6 +251,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     refreshModal.classList.remove('show');
   });
+
+  // Add event listeners to the theme and extension selects
+themeSelect.addEventListener('input', hoverCardUpdate);
+extensionSelect.addEventListener('input', hoverCardUpdate);
+
+function hoverCardUpdate() {
+  const friends = JSON.parse(localStorage.getItem('friends')) || [];
+  renderFriendsList(friends);
+}
 
   // Initial rendering of friends list from local storage
   const friends = JSON.parse(localStorage.getItem('friends')) || [];
