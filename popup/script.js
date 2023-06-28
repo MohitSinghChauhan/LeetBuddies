@@ -53,6 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
+  // Function to show a warning toast notification
+  function showWarningToast(message) {
+    iziToast.warning({
+      title: 'Warning',
+      message: message,
+      position: 'topRight',
+      timeout: 3000,
+    });
+  }
+
   // Function to fetch user data from the API
   const fetchUserData = async (username) => {
     const apiUrl = `https://leetcode-stats-api.herokuapp.com/${username}`;
@@ -186,13 +196,24 @@ document.addEventListener('DOMContentLoaded', () => {
             totalHard: data.totalHard,
             totalQuestions: data.totalQuestions,
           };
-
+  
           const friends = JSON.parse(localStorage.getItem('friends')) || [];
-          friends.push(friend);
-          localStorage.setItem('friends', JSON.stringify(friends));
-
-          renderFriendsList(friends);
-          showSuccessToast('User successfully added!');
+  
+          // Check if the user already exists in the friends list
+          const existingFriend = friends.find((f) => f.username === username);
+          if (existingFriend) {
+            // Show a warning toast using izitoast
+            iziToast.warning({
+              title: 'Warning',
+              message: 'User already exists in friends list!',
+            });
+          } else {
+            friends.push(friend);
+            localStorage.setItem('friends', JSON.stringify(friends));
+  
+            renderFriendsList(friends);
+            showSuccessToast('User successfully added!');
+          }
         } else {
           showErrorToast(data.message);
         }
@@ -202,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     searchInput.value = '';
-  };
+  };  
 
   // Event listener for search input (keypress)
   searchInput.addEventListener('keypress', async (e) => {
