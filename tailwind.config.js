@@ -7,5 +7,6 @@ module.exports = {
       './popup/*.js',
       // Add more file patterns if necessary
     ],
+    darkMode: 'class',
   };
   

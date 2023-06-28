@@ -5,6 +5,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchButton = document.getElementById('searchButton');
   const refreshButton = document.getElementById('refreshButton');
   const refreshModal = document.getElementById('refreshModal');
+  const toggleDarkModeButton = document.getElementById('toggleDarkMode');
+  
+
+  // Function to toggle dark mode
+  const toggleDarkMode = () => {
+    document.documentElement.classList.toggle('dark');
+
+    // Store the user's preference in local storage
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    localStorage.setItem('darkMode', isDarkMode);
+  };
+
+  // Event listener for toggle dark mode button
+  toggleDarkModeButton.addEventListener('click', toggleDarkMode);
+
+  // Function to load the user's dark mode preference from local storage
+  const loadDarkModePreference = () => {
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    }
+  };
+
+  // Call the function to load dark mode preference
+  loadDarkModePreference();
 
   // Function to show an error toast notification
   const showErrorToast = (message) => {
