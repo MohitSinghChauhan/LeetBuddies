@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'p-2',
       'mb-2',
       'border-2',
-      'border-gray-200',
+      'border-gray-200'
     );
 
     const friendName = document.createElement('a');
@@ -92,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const hoverModal = document.createElement('div');
     hoverModal.classList.add('box');
 
-    const theme = themeSelect.value;
-    const extension = extensionSelect.value;
+    const theme = localStorage.getItem('theme') || 'nord';
+    const extension = localStorage.getItem('extension') || 'activity';
 
     const iframe = document.createElement('iframe');
     iframe.src = `https://leetcard.jacoblin.cool/${friend.username}?theme=${theme}&font=Fira%20Code&ext=${extension}`;
@@ -253,13 +253,28 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Add event listeners to the theme and extension selects
-themeSelect.addEventListener('input', hoverCardUpdate);
-extensionSelect.addEventListener('input', hoverCardUpdate);
+  themeSelect.addEventListener('input', hoverCardUpdate);
+  extensionSelect.addEventListener('input', hoverCardUpdate);
 
-function hoverCardUpdate() {
-  const friends = JSON.parse(localStorage.getItem('friends')) || [];
-  renderFriendsList(friends);
-}
+  function hoverCardUpdate() {
+    const theme = themeSelect.value;
+    const extension = extensionSelect.value;
+
+    // Save the selected values to localStorage
+    localStorage.setItem('theme', theme);
+    localStorage.setItem('extension', extension);
+
+    const friends = JSON.parse(localStorage.getItem('friends')) || [];
+    renderFriendsList(friends);
+  }
+
+  // Initial rendering of theme and extension selects from local storage
+  const theme = localStorage.getItem('theme');
+  const extension = localStorage.getItem('extension');
+
+  // Set the selected values in the theme and extension selects
+  themeSelect.value = theme || 'nord';
+  extensionSelect.value = extension || 'activity';
 
   // Initial rendering of friends list from local storage
   const friends = JSON.parse(localStorage.getItem('friends')) || [];
