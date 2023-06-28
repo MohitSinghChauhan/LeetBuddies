@@ -36,6 +36,7 @@ LeetBuddies is a Chrome extension that helps you keep track of your friends' pro
 ## Screenshots
 ![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss1.png?raw=true)
 ![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss2.png?raw=true)
+![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss5.png?raw=true)
 ![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss3.png?raw=true)
 ![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss4.png?raw=true)
 
