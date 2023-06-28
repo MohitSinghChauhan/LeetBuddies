@@ -43,12 +43,18 @@ LeetBuddies is a Chrome extension that helps you keep track of your friends' pro
 ## Future Goals:
 - [ ] Search Users by their Name also.
 - [ ] Publish on Chrome Web Store.
+- [x] HoverCard Customization: Theme & Extensions.
+- [x] Implement Dark Mode.
+- [x] UI Improvements.
+- [x] Refresh Stats on demand.
+- [ ] Store data on remote DB to persist data.
 
 
 ## Credits
 - LeetCode Buddies is developed and maintained by [Mohit Singh Chauhan](https://github.com/MohitSinghChauhan).
 - Special thanks to the creators of the [LeetCode Stats API](https://leetcode-stats-api.herokuapp.com) and [LeetCode-Stats-Card](https://github.com/JacobLinCool/LeetCode-Stats-Card) for providing the data used in this extension.
 - This [StackOverFlow Answer](https://stackoverflow.com/questions/2117046/how-to-show-live-preview-in-a-small-popup-of-linked-page-on-mouse-over-on-link) is life-saver.
+- Chrome Developer Docs.
 - Our well-known friend ChatGPT.
 - For this `Readme` inspiration comes from [A Beginners Guide to writing a Kickass README ✍](https://gist.github.com/akashnimare/7b065c12d9750578de8e705fb4771d2f)
 
