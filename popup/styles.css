@@ -106,3 +106,14 @@ a:hover + .box,
 .delete-button:hover {
   animation: neonGlow infinite 100s ease-in;
 }
+
+#toggleDarkMode {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+#toggleDarkMode:hover {
+  animation: neonGlow infinite 100s ease-in;
+}
