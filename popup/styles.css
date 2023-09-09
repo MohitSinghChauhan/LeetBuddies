@@ -2,6 +2,11 @@
   font-family: cursive;
 }
 
+.root-container {
+  min-width: fit-content;
+  min-height: fit-content;
+}
+
 .custom-container {
   min-width: 600px;
   padding-bottom: 20px;
