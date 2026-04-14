@@ -1,82 +1,133 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>LeetCode Buddies Leaderboard</title>
-    <link rel="stylesheet" href="tailwind-build.css" />
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="../dist/css/iziToast.min.css" />
-    <script src="../dist/js/iziToast.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetBuddies</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../dist/css/iziToast.min.css">
+    <script src="../dist/js/iziToast.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
 </head>
+<body class="dark-theme">
+    <main class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <img src="../assets/icons/icon48.png" alt="Logo" class="app-logo">
+                <h1>LeetBuddies</h1>
+            </div>
+            <div class="header-actions">
+                <button id="toggleTheme" class="icon-btn" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+                <button id="refreshBtn" class="icon-btn" title="Refresh All"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+        </header>
 
-<body class="dark:bg-gray-900 root-container">
-    <div class="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <div class="custom-container w-full max-w-md rounded bg-white dark:bg-gray-800 p-4">
-            <p id="toggleDarkMode"
-                class="text-2xl text-white rounded px-2 py-2 self-start mb-6">🌓</p>
-            <h1 class="mb-4 text-center text-2xl text-gray-800 dark:text-white">LeetCode Buddies Leaderboard</h1>
-            <div class="mb-4 flex items-center">
-                <input type="text" id="searchInput" placeholder="Search username"
-                    class="w-full rounded-l border-solid border-2 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-700 text-gray-800 dark:text-gray-200" />
-                <button id="searchButton"
-                    class="rounded-r bg-blue-500 px-4 py-2 border-2 border-blue-500 text-white hover:bg-blue-600 focus:outline-none dark:bg-blue-800 dark:border-blue-800">Search</button>
+        <!-- Search Bar -->
+        <section class="search-section">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="usernameInput" placeholder="Add a LeetCode username..." autocomplete="off">
+                <button id="addBtn" class="primary-btn">Add</button>
             </div>
-            <div id="friendsList">
-                <!-- Friend List Items -->
-            </div>
-            <button id="sortButton"
-                class="mt-4 self-end rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none dark:bg-blue-800">Sort
-                by Total Problems
-            </button>
-            <button id="refreshButton"
-                class="mt-4 self-end rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none dark:bg-blue-800">Refresh
-                &nbsp;<i class="fa fa-refresh" aria-hidden="true"></i></button>
+        </section>
 
-            <div id="refreshModal" class="modal">
-                <div class="modal-content dark:bg-gray-800">
-                    <div class="modal-header">
-                        <h2 class="text-gray-800 dark:text-white">Refreshing Leaderboard...</h2>
-                    </div>
-                    <div class="modal-body">
-                        <div class="loader"></div>
-                        <p class="text-gray-800 dark:text-gray-200">
-                            LeetCode buddies,<br />
-                            Get ready for the leaderboard shuffle!<br />
-                            The race for first place is on. Stay tuned!
-                        </p>
-                    </div>
-                </div>
+        <!-- Tools & Filters -->
+        <section class="tools-section">
+            <div class="tool-group">
+                <label for="themeSelect"><i class="fa-solid fa-palette"></i> Stats Theme:</label>
+                <select id="themeSelect">
+                    <option value="dark" selected>Dark</option>
+                    <option value="forest">Forest</option>
+                    <option value="light">Light</option>
+                    <option value="nord">Nord</option>
+                    <option value="unicorn">Unicorn</option>
+                    <option value="wtf">WTF</option>
+                </select>
             </div>
-            <div class="mt-2 flex items-center bg-gray-200 px-4 py-1 rounded dark:bg-blue-800 justify-between">
-                <p class="mr-2 dark:text-white font-medium">Hover Card Customization:</p>
-                <div class="flex items-center">
-                  <p class="mr-2 dark:text-white">Theme:</p>
-                  <select id="theme" class="rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 border-solid dark:bg-gray-800 dark:text-white">
-                    <option value="dark">dark</option>
-                    <option value="forest">forest</option>
-                    <option value="light" selected="">light</option>
-                    <option value="nord">nord</option>
-                    <option value="unicorn">unicorn</option>
-                    <option value="wtf">wtf</option>
-                  </select>
-                </div>
-                <div class="flex items-center ml-4">
-                  <p class="mr-2 dark:text-white">Extension:</p>
-                  <select id="extension" class="rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 border-solid dark:bg-gray-800 dark:text-white">
-                    <option value="" selected="">No Extension</option>
-                    <option value="activity">Activity</option>
+            <div class="tool-group">
+                <label for="extSelect"><i class="fa-solid fa-puzzle-piece"></i> Details:</label>
+                <select id="extSelect">
+                    <option value="">None</option>
+                    <option value="activity" selected>Activity</option>
                     <option value="contest">Contest</option>
                     <option value="heatmap">Heatmap</option>
-                  </select>
-                </div>
-              </div>
-              
-        </div>
-    </div>
-</body>
+                </select>
+            </div>
+            <div class="tool-group">
+                <label for="sortSelect"><i class="fa-solid fa-arrow-down-9-1"></i> Sort:</label>
+                <select id="sortSelect">
+                    <option value="total">Total</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+        </section>
 
+        <!-- Friends List -->
+        <section class="friends-list-container">
+            <div id="friendsList" class="friends-list">
+                <!-- User Cards will be injected here -->
+            </div>
+            <div id="emptyState" class="empty-state hidden">
+                <i class="fa-solid fa-user-astronaut"></i>
+                <p>No buddies tracked yet.<br>Add someone to start competing!</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Made with <i class="fa-solid fa-heart" style="color: #ff375f; font-size: 0.65rem;"></i> by Mohit</p>
+            <a href="https://github.com/MohitSinghChauhan/LeetBuddies" target="_blank" class="github-star-btn">
+                <i class="fa-brands fa-github"></i> Star it on GitHub
+            </a>
+        </footer>
+    </main>
+
+    <!-- Templates -->
+    <template id="userCardTemplate">
+        <div class="user-card flex-col">
+            <div class="card-header">
+                <a href="#" class="username" target="_blank">Username</a>
+                <div style="display: flex; gap: 4px; align-items: center;">
+                    <button class="toggle-stats-btn" title="Show Rich Stats"><i class="fa-solid fa-chart-area"></i> <span>Rich Stats</span></button>
+                    <button class="delete-btn" title="Remove User"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </div>
+            <div class="stats-row">
+                <div class="stat badge-easy" title="Easy Solved">
+                    <span class="label">Easy</span>
+                    <span class="value easy-val">0</span>
+                </div>
+                <div class="stat badge-medium" title="Medium Solved">
+                    <span class="label">Med</span>
+                    <span class="value medium-val">0</span>
+                </div>
+                <div class="stat badge-hard" title="Hard Solved">
+                    <span class="label">Hard</span>
+                    <span class="value hard-val">0</span>
+                </div>
+                <div class="stat badge-total" title="Total Solved">
+                    <span class="label">Total</span>
+                    <span class="value total-val">0</span>
+                </div>
+            </div>
+            
+            <!-- Accordion Preview -->
+            <div class="accordion-wrapper">
+                <div class="accordion-preview">
+                    <img class="leetcard-img" src="" alt="LeetCard Stats" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="card-loader hidden">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
 </html>

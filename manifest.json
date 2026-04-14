@@ -1,14 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "LeetBuddies",
-  "version": "1.0",
-  "description": "An extension to help you to keep track of your friends' problem-solving achievements on LeetCode by displaying the leaderboard.",
+  "name": "LeetBuddies - Friends' LeetCode Stats Tracker",
+  "version": "2.0",
+  "description": "LeetBuddies: The ultimate tracker to compare LeetCode stats, heatmaps, and achievements with your friends.",
   "icons": {
     "16": "assets/icons/icon16.png",
     "32": "assets/icons/icon32.png",
     "48": "assets/icons/icon48.png",
     "128": "assets/icons/icon128.png"
   },
+  "permissions": [
+    "storage"
+  ],
   "action": {
     "default_popup": "popup/popup.html"
   }

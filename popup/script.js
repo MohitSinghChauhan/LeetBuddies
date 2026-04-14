@@ -1,191 +1,132 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.getElementById('searchInput');
-  const friendsList = document.getElementById('friendsList');
-  const sortButton = document.getElementById('sortButton');
-  const searchButton = document.getElementById('searchButton');
-  const refreshButton = document.getElementById('refreshButton');
-  const refreshModal = document.getElementById('refreshModal');
-  const toggleDarkModeButton = document.getElementById('toggleDarkMode');
-  const themeSelect = document.getElementById('theme');
-  const extensionSelect = document.getElementById('extension');
+    // --- Elements ---
+    const themeBtn = document.getElementById('toggleTheme');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const addBtn = document.getElementById('addBtn');
+    const searchInput = document.getElementById('usernameInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const friendsListContainer = document.getElementById('friendsList');
+    const emptyState = document.getElementById('emptyState');
+    
+    const themeSelect = document.getElementById('themeSelect');
+    const extSelect = document.getElementById('extSelect');
 
-  // Function to toggle dark mode
-  const toggleDarkMode = () => {
-    document.documentElement.classList.toggle('dark');
+    const userCardTemplate = document.getElementById('userCardTemplate');
+    
+    let friendsData = [];
 
-    // Store the user's preference in local storage
-    const isDarkMode = document.documentElement.classList.contains('dark');
-    localStorage.setItem('darkMode', isDarkMode);
-  };
+    // --- Initialization ---
+    init();
 
-  // Event listener for toggle dark mode button
-  toggleDarkModeButton.addEventListener('click', toggleDarkMode);
+    async function init() {
+        chrome.storage.local.get(['theme', 'ext', 'friends', 'appTheme', 'sortBy'], (result) => {
+            // App UI Theme
+            const appTheme = result.appTheme || 'dark';
+            document.body.setAttribute('data-theme', appTheme);
+            updateThemeIcon(appTheme);
 
-  // Function to load the user's dark mode preference from local storage
-  const loadDarkModePreference = () => {
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            // Options
+            if (result.theme) themeSelect.value = result.theme;
+            if (result.ext !== undefined) extSelect.value = result.ext;
+            if (result.sortBy !== undefined) sortSelect.value = result.sortBy;
 
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+            friendsData = result.friends || [];
+            
+            // 1) Render cached data FIRST for a better user experience (no empty flashes).
+            renderFriends();
+
+            // 2) Automatic silent refresh on startup to get the latest data behind the scenes.
+            refreshAll(true);
+        });
+
+        // Setup Event Listeners
+        themeBtn.addEventListener('click', toggleAppTheme);
+        refreshBtn.addEventListener('click', () => refreshAll(false)); 
+        
+        addBtn.addEventListener('click', handleAdd);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleAdd();
+        });
+
+        sortSelect.addEventListener('change', () => {
+            chrome.storage.local.set({ sortBy: sortSelect.value });
+            sortFriends();
+        });
+        
+        themeSelect.addEventListener('change', () => {
+            savePrefs();
+            // Re-render to update iframes if any are open
+            renderFriends();
+        });
+        extSelect.addEventListener('change', () => {
+            savePrefs();
+            renderFriends();
+        });
     }
-  };
 
-  // Call the function to load dark mode preference
-  loadDarkModePreference();
+    // --- Core Functions ---
 
-  // Function to show an error toast notification
-  const showErrorToast = (message) => {
-    iziToast.error({
-      title: 'Error',
-      message: message,
-      position: 'topRight',
-      timeout: 3000,
-    });
-  };
-
-  // Function to show a success toast notification
-  const showSuccessToast = (message) => {
-    iziToast.success({
-      title: 'Success',
-      message: message,
-      position: 'topRight',
-      timeout: 3000,
-    });
-  };
-
-  // Function to show a warning toast notification
-  function showWarningToast(message) {
-    iziToast.warning({
-      title: 'Warning',
-      message: message,
-      position: 'topRight',
-      timeout: 3000,
-    });
-  }
-
-  // Function to fetch user data from the API
-  const fetchUserData = async (username) => {
-    const apiUrl = `https://leetcode-stats-api.herokuapp.com/${username}`;
-
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      showErrorToast(error);
+    function toggleAppTheme() {
+        const current = document.body.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', next);
+        updateThemeIcon(next);
+        chrome.storage.local.set({ appTheme: next });
     }
-  };
 
-  // Function to render friend's data on the popup page
-  const renderFriendData = (friend, index) => {
-    const friendItem = document.createElement('div');
-    friendItem.classList.add(
-      'friend',
-      'flex',
-      'items-center',
-      'justify-between',
-      'bg-white',
-      'rounded',
-      'p-2',
-      'mb-2',
-      'border-2',
-      'border-gray-200'
-    );
+    function updateThemeIcon(theme) {
+        const icon = themeBtn.querySelector('i');
+        icon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    }
 
-    const friendName = document.createElement('a');
-    friendName.textContent = friend.username;
-    friendName.href = `https://leetcode.com/${friend.username}`;
-    friendName.target = '_blank';
-    friendName.classList.add('text-blue-500', 'font-medium');
-    friendItem.appendChild(friendName);
+    function savePrefs() {
+        chrome.storage.local.set({
+            theme: themeSelect.value,
+            ext: extSelect.value
+        });
+    }
 
-    const hoverModal = document.createElement('div');
-    hoverModal.classList.add('box');
+    async function fetchUserData(username) {
+        try {
+            const res = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
+            const data = await res.json();
+            return data;
+        } catch (e) {
+            console.error(e);
+            return { status: "error", message: "Network Error" };
+        }
+    }
 
-    const theme = localStorage.getItem('theme') || 'nord';
-    const extension = localStorage.getItem('extension') || 'activity';
+    async function handleAdd() {
+        const username = searchInput.value.trim();
+        if (!username) return;
 
-    const iframe = document.createElement('iframe');
-    iframe.src = `https://leetcard.jacoblin.cool/${friend.username}?theme=${theme}&font=Fira%20Code&ext=${extension}`;
-    iframe.width = '400px';
-    iframe.height = '100%';
-    iframe.style.border = 'none';
-    hoverModal.appendChild(iframe);
+        // Prevent duplicates
+        if (friendsData.some(f => f.username.toLowerCase() === username.toLowerCase())) {
+            iziToast.warning({ title: 'Already tracked', message: `${username} is already on your list.`});
+            return;
+        }
 
-    friendItem.appendChild(hoverModal);
+        addBtn.disabled = true;
+        addBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-    const detailsContainer = document.createElement('div');
-    detailsContainer.classList.add('flex', 'gap-4');
-
-    const easyCount = document.createElement('span');
-    easyCount.textContent = `Easy: ${friend.easySolved}/${friend.totalEasy}`;
-    easyCount.classList.add('text-green-500', 'font-medium');
-    detailsContainer.appendChild(easyCount);
-
-    const mediumCount = document.createElement('span');
-    mediumCount.textContent = `Medium: ${friend.mediumSolved}/${friend.totalMedium}`;
-    mediumCount.classList.add('text-yellow-500', 'font-medium');
-    detailsContainer.appendChild(mediumCount);
-
-    const hardCount = document.createElement('span');
-    hardCount.textContent = `Hard: ${friend.hardSolved}/${friend.totalHard}`;
-    hardCount.classList.add('text-red-500', 'font-medium');
-    detailsContainer.appendChild(hardCount);
-
-    const totalCount = document.createElement('span');
-    totalCount.textContent = `Total: ${friend.totalSolved}/${friend.totalQuestions}`;
-    totalCount.classList.add('text-blue-500', 'font-medium');
-    detailsContainer.appendChild(totalCount);
-
-    const deleteButton = document.createElement('button');
-    deleteButton.classList.add('delete-button');
-    deleteButton.innerHTML = '<i class="fas fa-trash"></i>'; // FontAwesome trash icon
-    detailsContainer.appendChild(deleteButton);
-
-    // Event listener for delete button
-    deleteButton.addEventListener('click', () => {
-      const friends = JSON.parse(localStorage.getItem('friends')) || [];
-      friends.splice(index, 1);
-      localStorage.setItem('friends', JSON.stringify(friends));
-      renderFriendsList(friends);
-    });
-
-    friendItem.appendChild(detailsContainer);
-
-    return friendItem;
-  };
-
-  // Function to render friends list
-  const renderFriendsList = (friends) => {
-    friendsList.innerHTML = '';
-
-    friends.forEach((friend, index) => {
-      const friendItem = renderFriendData(friend, index);
-      friendsList.appendChild(friendItem);
-    });
-  };
-
-  // Function to sort friends by total problems solved
-  const sortFriendsByTotalProblems = (friends) => {
-    return friends.sort((a, b) => b.totalSolved - a.totalSolved);
-  };
-
-  // Event listener for sort button
-  sortButton.addEventListener('click', () => {
-    const friends = JSON.parse(localStorage.getItem('friends')) || [];
-    const sortedFriends = sortFriendsByTotalProblems(friends);
-    renderFriendsList(sortedFriends);
-    localStorage.setItem('friends', JSON.stringify(sortedFriends));
-  });
-
-  // Function to handle the search action
-  const handleSearch = async () => {
-    const username = searchInput.value.trim();
-    if (username !== '') {
-      try {
         const data = await fetchUserData(username);
+        
+        addBtn.disabled = false;
+        addBtn.innerHTML = 'Add';
+        searchInput.value = '';
+
         if (data.status === 'success') {
-          const friend = {
+            friendsData.push(mapUserStats(username, data));
+            sortFriends();
+            iziToast.success({ title: 'Added', message: `Successfully added ${username}!`});
+        } else {
+            iziToast.error({ title: 'Error', message: data.message || 'User not found.'});
+        }
+    }
+
+    function mapUserStats(username, data) {
+         return {
             username: username,
             easySolved: data.easySolved,
             mediumSolved: data.mediumSolved,
@@ -195,109 +136,124 @@ document.addEventListener('DOMContentLoaded', () => {
             totalMedium: data.totalMedium,
             totalHard: data.totalHard,
             totalQuestions: data.totalQuestions,
-          };
-  
-          const friends = JSON.parse(localStorage.getItem('friends')) || [];
-  
-          // Check if the user already exists in the friends list
-          const existingFriend = friends.find((f) => f.username === username);
-          if (existingFriend) {
-            // Show a warning toast using izitoast
-            iziToast.warning({
-              title: 'Warning',
-              message: 'User already exists in friends list!',
-            });
-          } else {
-            friends.push(friend);
-            localStorage.setItem('friends', JSON.stringify(friends));
-  
-            renderFriendsList(friends);
-            showSuccessToast('User successfully added!');
-          }
-        } else {
-          showErrorToast(data.message);
-        }
-      } catch (error) {
-        showErrorToast('An error occurred while fetching user data.');
-        console.error(error);
-      }
-    }
-    searchInput.value = '';
-  };  
-
-  // Event listener for search input (keypress)
-  searchInput.addEventListener('keypress', async (e) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  });
-
-  // Event listener for search button (click)
-  searchButton.addEventListener('click', async () => {
-    handleSearch();
-  });
-
-  // Event listener for refresh button
-  refreshButton.addEventListener('click', async () => {
-    const friends = JSON.parse(localStorage.getItem('friends')) || [];
-    const updatedFriends = [];
-
-    refreshModal.classList.add('show');
-
-    for (const friend of friends) {
-      const data = await fetchUserData(friend.username);
-
-      if (data.status === 'success') {
-        const updatedFriend = {
-          username: friend.username,
-          easySolved: data.easySolved,
-          mediumSolved: data.mediumSolved,
-          hardSolved: data.hardSolved,
-          totalSolved: data.totalSolved,
-          totalEasy: data.totalEasy,
-          totalMedium: data.totalMedium,
-          totalHard: data.totalHard,
-          totalQuestions: data.totalQuestions,
         };
-
-        updatedFriends.push(updatedFriend);
-      } else {
-        showErrorToast(data.message);
-      }
     }
 
-    localStorage.setItem('friends', JSON.stringify(updatedFriends));
-    renderFriendsList(updatedFriends);
-    showSuccessToast('Leaderboard successfully refreshed!');
+    function removeFriend(username) {
+        friendsData = friendsData.filter(f => f.username !== username);
+        saveDataAndRender();
+    }
 
-    refreshModal.classList.remove('show');
-  });
+    function sortFriends() {
+        const sortType = sortSelect.value;
+        friendsData.sort((a, b) => {
+            if (sortType === 'total') return b.totalSolved - a.totalSolved;
+            if (sortType === 'easy') return b.easySolved - a.easySolved;
+            if (sortType === 'medium') return b.mediumSolved - a.mediumSolved;
+            if (sortType === 'hard') return b.hardSolved - a.hardSolved;
+            return b.totalSolved - a.totalSolved;
+        });
+        saveDataAndRender();
+    }
 
-  // Add event listeners to the theme and extension selects
-  themeSelect.addEventListener('input', hoverCardUpdate);
-  extensionSelect.addEventListener('input', hoverCardUpdate);
+    async function refreshAll(silent = false) {
+        if (friendsData.length === 0) {
+            renderFriends(); // Render empty state
+            return;
+        }
 
-  function hoverCardUpdate() {
-    const theme = themeSelect.value;
-    const extension = extensionSelect.value;
+        if (!silent) {
+            refreshBtn.disabled = true;
+            refreshBtn.querySelector('i').classList.add('fa-spin');
+        }
+        
+        let allSuccess = true;
+        let anyUpdated = false;
 
-    // Save the selected values to localStorage
-    localStorage.setItem('theme', theme);
-    localStorage.setItem('extension', extension);
+        for (let i = 0; i < friendsData.length; i++) {
+            const data = await fetchUserData(friendsData[i].username);
+            if (data.status === 'success') {
+                friendsData[i] = mapUserStats(friendsData[i].username, data);
+                anyUpdated = true;
+            } else {
+                allSuccess = false;
+            }
+        }
 
-    const friends = JSON.parse(localStorage.getItem('friends')) || [];
-    renderFriendsList(friends);
-  }
+        if (!silent) {
+            refreshBtn.disabled = false;
+            refreshBtn.querySelector('i').classList.remove('fa-spin');
+        }
 
-  // Initial rendering of theme and extension selects from local storage
-  const theme = localStorage.getItem('theme');
-  const extension = localStorage.getItem('extension');
+        if (anyUpdated || !silent) {
+            sortFriends();
+        }
 
-  // Set the selected values in the theme and extension selects
-  themeSelect.value = theme || 'nord';
-  extensionSelect.value = extension || 'activity';
+        if (!silent) {
+            if (allSuccess) iziToast.success({ title: 'Refreshed', message: 'All stats updated!'});
+            else iziToast.warning({ title: 'Partial Refresh', message: 'Some users failed to update.'});
+        }
+    }
 
-  // Initial rendering of friends list from local storage
-  const friends = JSON.parse(localStorage.getItem('friends')) || [];
-  renderFriendsList(friends);
+    function saveDataAndRender() {
+        chrome.storage.local.set({ friends: friendsData }, () => {
+            renderFriends();
+        });
+    }
+
+    // --- Rendering ---
+    function renderFriends() {
+        friendsListContainer.innerHTML = '';
+
+        if (friendsData.length === 0) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden');
+
+            friendsData.forEach((friend) => {
+                const clone = userCardTemplate.content.cloneNode(true);
+                const userCard = clone.querySelector('.user-card');
+                
+                const usernameEl = clone.querySelector('.username');
+                usernameEl.textContent = friend.username;
+                usernameEl.href = `https://leetcode.com/${friend.username}`;
+                
+                clone.querySelector('.easy-val').textContent = friend.easySolved;
+                clone.querySelector('.medium-val').textContent = friend.mediumSolved;
+                clone.querySelector('.hard-val').textContent = friend.hardSolved;
+                clone.querySelector('.total-val').textContent = friend.totalSolved;
+
+                // Handle Delete
+                const delBtn = clone.querySelector('.delete-btn');
+                delBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    removeFriend(friend.username);
+                });
+
+                // Accordion click effect
+                const toggleBtn = clone.querySelector('.toggle-stats-btn');
+                const img = clone.querySelector('img.leetcard-img');
+
+                toggleBtn.addEventListener('click', () => {
+                    // Toggle expanded class
+                    const isExpanded = userCard.classList.toggle('expanded');
+                    
+                    if (isExpanded) {
+                        toggleBtn.title = 'Hide Rich Stats';
+                        // Load img source if it's empty
+                        if (!img.src || img.src === window.location.href) {
+                            const lcExt = extSelect.value;
+                            const lcTheme = themeSelect.value;
+                            img.src = `https://leetcard.jacoblin.cool/${friend.username}?theme=${lcTheme}&font=Inter${lcExt ? '&ext=' + lcExt : ''}`;
+                        }
+                    } else {
+                        toggleBtn.title = 'Show Rich Stats';
+                    }
+                });
+
+                friendsListContainer.appendChild(clone);
+            });
+        }
+    }
 });

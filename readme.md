@@ -34,11 +34,19 @@ LeetBuddies is a Chrome extension that helps you keep track of your friends' pro
 - DB: Local Storage
 
 ## Screenshots
-![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss1.png?raw=true)
-![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss2.png?raw=true)
-![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss5.png?raw=true)
-![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss3.png?raw=true)
-![Popup Page](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/ss4.png?raw=true)
+![Slide 1](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/promo_slide1.png?raw=true)
+![Slide 2](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/promo_slide2.png?raw=true)
+![Slide 3](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/promo_slide3.png?raw=true)
+![Slide 4](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/promo_slide4.png?raw=true)
+![Slide 5](https://github.com/MohitSinghChauhan/LeetBuddies/blob/main/screenshots/promo_slide5.png?raw=true)
+
+## Change Log
+
+### v2.0
+- **Kinetic Pro Aesthetic**: Redesigned UI featuring a glassmorphism dark theme and LeetCode accents.
+- **Accordion Stats Viewer**: Replaced outdated hover cards with an explicit, high-performance accordion interface for deep metric analysis.
+- **Zero-Flash Loading**: Migrated to `chrome.storage.local` with "cached-first" rendering and silent background API refreshes.
+- **Scalable SVG Handling**: Native LeetCard API integration with accurate scaling and aspect ratio lockdown.
 
 ## Future Goals:
 - [ ] Search Users by their Name also.

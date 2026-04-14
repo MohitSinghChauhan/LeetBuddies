@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LeetBuddies Promo Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #06080b;
+            --lc-orange: #FFA116;
+            --lc-easy: #00B8A3;
+            --lc-med: #FFC01E;
+            --lc-hard: #FF375F;
+        }
+
+        body {
+            background-color: #1e1e1e;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .controls {
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        button {
+            background: var(--lc-orange);
+            color: #111;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+
+        .slide {
+            width: 1280px;
+            height: 800px;
+            background: radial-gradient(circle at top right, #111a2f, var(--bg-deep) 60%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .content {
+            z-index: 2;
+            padding: 80px;
+            width: 45%;
+        }
+
+        #slide1 .content { width: 40%; }
+
+        .visual {
+            position: absolute;
+            right: 80px;
+            background: rgba(255, 161, 22, 0.15);
+            color: var(--lc-orange);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: inline-block;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 161, 22, 0.3);
+        }
+
+        h1 {
+            font-size: 3.9rem;
+            line-height: 1.1;
+            margin: 0 0 24px 0;
+            letter-spacing: -2px;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: 1.5rem;
+            line-height: 1.4;
+            color: #8892b0;
+            margin: 0;
+        }
+
+        .visual {
+            position: absolute;
+            right: 80px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 480px;
+            height: auto;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            padding: 24px;
+        }
+
+        .visual-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .visual-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--lc-orange);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #111;
+            font-weight: 900;
+        }
+
+        .mock-user {
+            background: #141924;
+            border: 1px solid rgba(255,161,22,0.5);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 30px rgba(255,161,22,0.1);
+        }
+
+        .mock-user-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .mock-stats {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .mock-stat {
+            background: rgba(255,255,255,0.05);
+            padding: 8px;
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+        }
+        .mock-stat-label { font-size: 0.8rem; font-weight: 700; opacity: 0.8; }
+        .mock-stat-val { font-size: 1.4rem; font-weight: 700; margin-top: 4px; font-family: 'Space Grotesk', sans-serif;}
+
+        .mock-easy { color: var(--lc-easy); }
+        .mock-med { color: var(--lc-med); }
+        .mock-hard { color: var(--lc-hard); }
+
+        .mock-heatmap {
+            height: 120px;
+            background: rgba(0, 184, 163, 0.1);
+            border: 1px solid rgba(0, 184, 163, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--lc-easy);
+            font-weight: 600;
+        }
+
+        /* Slide 1 Tweaks for gap */
+        #slide1 .visual { right: 50px; width: 440px; }
+
+        /* Slide Layout Variations */
+        #slide2, #slide4 { background: radial-gradient(circle at bottom left, #0a1120, #000 70%); }
+        #slide2 .visual, #slide4 .visual { left: 60px; right: auto; transform: translateY(-50%) rotate(2deg); width: 480px;}
+        #slide2 .content, #slide4 .content { margin-left: 55%; padding-left: 40px; }
+
+        #slide3 { background: radial-gradient(circle at top right, #1a0f0a, #000 70%); }
+        #slide3 .visual { left: auto; right: 60px; transform: translateY(-50%) rotate(-2deg); width: 480px;}
+        #slide3 .content { width: 42%; margin-left: 0; padding-left: 80px; }
+
+        /* Slide 5 Variations */
+        #slide5 { background: radial-gradient(circle at center, #1b120c, #000 60%); }
+        #slide5 .visual { right: auto; left: 50%; top: 60%; transform: translateX(-50%); width: 800px; display: flex; gap: 20px;}
+        #slide5 .content { padding-top: 100px; width: 100%; text-align: center; justify-content: center; align-items: center; display: flex; flex-direction: column; }
+        #slide5 h1 { font-size: 4.4rem; }
+
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <button onclick="downloadAll()">Download All Screenshots (1280x800)</button>
+    </div>
+
+    <!-- Slide 1: Main Feature -->
+    <div class="slide" id="slide1">
+        <div class="content">
+            <div class="badge"><i class="fa-solid fa-users"></i> Real-Time Leaderboard</div>
+            <h1>Compete With Your Friends.</h1>
+            <p>Track your group's LeetCode progression instantly from your browser. Never miss a streak or a hard problem solved.</p>
+        </div>
+        <div class="visual" style="transform: translateY(-50%) rotate(-2deg);">
+            <div class="visual-header">
+                <img src="../assets/icons/icon128.png" style="width: 48px; height: 48px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);" />
+                <h3 style="margin:0; font-size:1.8rem; font-weight: 800;">LeetBuddies</h3>
+            </div>
+            
+            <div class="mock-user">
+                <div class="mock-user-header"><span>mohitdotexe <i class="fa-solid fa-crown" style="color: gold; font-size: 1rem;"></i></span> <span><i class="fa-solid fa-fire" style="color:#FFA116;"></i> 42</span></div>
+                <div class="mock-stats">
+                    <div class="mock-stat mock-easy"><div class="mock-stat-label">EASY</div><div class="mock-stat-val">245</div></div>
+                    <div class="mock-stat mock-med"><div class="mock-stat-label">MED</div><div class="mock-stat-val">198</div></div>
+                    <div class="mock-stat mock-hard"><div class="mock-stat-label">HARD</div><div class="mock-stat-val">52</div></div>
+                </div>
+            </div>
+
+            <div class="mock-user" style="opacity: 0.6; transform: scale(0.95); border-color: rgba(255,255,255,0.1); box-shadow: none;">
+                <div class="mock-user-header"><span>utsav007</span> <span><i class="fa-solid fa-fire" style="color:#888;"></i> 12</span></div>
+                <div class="mock-stats">
+                    <div class="mock-stat mock-easy"><div class="mock-stat-label">EASY</div><div class="mock-stat-val">190</div></div>
+                    <div class="mock-stat mock-med"><div class="mock-stat-label">MED</div><div class="mock-stat-val">244</div></div>
+                    <div class="mock-stat mock-hard"><div class="mock-stat-label">HARD</div><div class="mock-stat-val">53</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Activity -->
+    <div class="slide" id="slide2">
+        <div class="visual">
+            <div class="mock-user">
+                <div class="mock-user-header"><span>utsav007</span> <span style="font-size:0.9rem; color:var(--lc-orange);"><i class="fa-solid fa-chart-area"></i> Activity</span></div>
+                <img data-svg-src="https://leetcard.jacoblin.cool/utsav007?theme=dark&font=Inter&ext=activity" crossorigin="anonymous" style="width: 100%; border-radius: 8px; display: block;" />
+            </div>
+        </div>
+        <div class="content">
+            <div class="badge"><i class="fa-solid fa-chart-line"></i> Submissions Log</div>
+            <h1>Daily Activity Graph.</h1>
+            <p>Track your friends' recent submission timeline, including problem difficulty, directly on their profile card.</p>
+        </div>
+    </div>
+
+    <!-- Slide 3: Contest -->
+    <div class="slide" id="slide3">
+        <div class="visual">
+            <div class="mock-user">
+                <div class="mock-user-header"><span>utsav007</span> <span style="font-size:0.9rem; color:var(--lc-orange);"><i class="fa-solid fa-chart-area"></i> Contest</span></div>
+                <img data-svg-src="https://leetcard.jacoblin.cool/utsav007?theme=dark&font=Inter&ext=contest" crossorigin="anonymous" style="width: 100%; border-radius: 8px; display: block;" />
+            </div>
+        </div>
+        <div class="content">
+            <div class="badge"><i class="fa-solid fa-trophy"></i> Global Ranking</div>
+            <h1>Contest Ratings.</h1>
+            <p>See exactly how your buddies perform in weekly contests with beautiful, graph-based rating trajectories.</p>
+        </div>
+    </div>
+
+    <!-- Slide 4: Heatmap -->
+    <div class="slide" id="slide4">
+        <div class="visual">
+            <div class="mock-user">
+                <div class="mock-user-header"><span>utsav007</span> <span style="font-size:0.9rem; color:var(--lc-orange);"><i class="fa-solid fa-chart-area"></i> Heatmap</span></div>
+                <img data-svg-src="https://leetcard.jacoblin.cool/utsav007?theme=dark&font=Inter&ext=heatmap" crossorigin="anonymous" style="width: 100%; border-radius: 8px; display: block;" />
+            </div>
+        </div>
+        <div class="content">
+            <div class="badge"><i class="fa-solid fa-calendar-days"></i> Consistency</div>
+            <h1>Yearly Heatmap.</h1>
+            <p>Are they staying disciplined? Unveil a GitHub-style yearly heatmap of solved problems without ever leaving the tab.</p>
+        </div>
+    </div>
+
+    <!-- Slide 5: Themes -->
+    <div class="slide" id="slide5">
+        <div class="content">
+            <div class="badge"><i class="fa-solid fa-palette"></i> Native Dark Mode</div>
+            <h1>Aesthetic by Default.</h1>
+            <p>Engineered with stunning glassmorphism and an immersive dark-theme.<br>Focus on solving, we'll handle looking good.</p>
+        </div>
+    </div>
+
+    <script>
+        // Inline SVGs to ensure they are parsed as pure DOM elements
+        async function preloadSVGs() {
+            const imgs = document.querySelectorAll('img[data-svg-src]');
+            for (let img of imgs) {
+                try {
+                    const res = await fetch(img.getAttribute('data-svg-src'));
+                    const svgText = await res.text();
+                    // Encode SVG to Base64 Data URI to prevent DOM/CSS coordinate distortion
+                    const base64 = btoa(unescape(encodeURIComponent(svgText)));
+                    img.src = 'data:image/svg+xml;base64,' + base64;
+                    img.style.width = '100%';
+                    img.style.height = 'auto';
+                    img.style.display = 'block';
+                    img.style.borderRadius = '8px';
+                } catch (e) {
+                    console.error('SVG load fail:', e);
+                }
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', preloadSVGs);
+
+        async function downloadAll() {
+            const slides = ['slide1', 'slide2', 'slide3', 'slide4', 'slide5'];
+            const btn = document.querySelector('button');
+            btn.innerText = "Generating Please Wait...";
+            
+            for (let id of slides) {
+                const el = document.getElementById(id);
+                // html-to-image perfectly captures SVGs and modern CSS
+                const dataUrl = await htmlToImage.toPng(el, { pixelRatio: 1 });
+                
+                const link = document.createElement('a');
+                link.download = `promo_${id}.png`;
+                link.href = dataUrl;
+                link.click();
+                
+                await new Promise(r => setTimeout(r, 800)); // Delay for browser to digest download
+            }
+            btn.innerText = "Download All Screenshots (1280x800)";
+        }
+    </script>
+</body>
+</html>
