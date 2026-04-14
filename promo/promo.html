@@ -313,13 +313,16 @@
                 try {
                     const res = await fetch(img.getAttribute('data-svg-src'));
                     const svgText = await res.text();
-                    // Encode SVG to Base64 Data URI to prevent DOM/CSS coordinate distortion
-                    const base64 = btoa(unescape(encodeURIComponent(svgText)));
-                    img.src = 'data:image/svg+xml;base64,' + base64;
-                    img.style.width = '100%';
-                    img.style.height = 'auto';
-                    img.style.display = 'block';
-                    img.style.borderRadius = '8px';
+                    const container = document.createElement('div');
+                    container.innerHTML = svgText;
+                    const svg = container.querySelector('svg');
+                    if (svg) {
+                        svg.style.width = '100%';
+                        svg.style.height = 'auto';
+                        svg.style.display = 'block';
+                        svg.style.borderRadius = '8px';
+                        img.replaceWith(svg);
+                    }
                 } catch (e) {
                     console.error('SVG load fail:', e);
                 }

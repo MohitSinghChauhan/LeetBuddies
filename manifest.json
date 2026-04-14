@@ -12,6 +12,10 @@
   "permissions": [
     "storage"
   ],
+  "host_permissions": [
+    "https://leetcode-stats-api.herokuapp.com/*",
+    "https://leetcard.jacoblin.cool/*"
+  ],
   "action": {
     "default_popup": "popup/popup.html"
   }
