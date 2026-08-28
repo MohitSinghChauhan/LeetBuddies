@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LeetBuddies - Friends' LeetCode Stats Tracker",
-  "version": "2.0",
+  "version": "2.1",
   "description": "LeetBuddies: The ultimate tracker to compare LeetCode stats, heatmaps, and achievements with your friends.",
   "icons": {
     "16": "assets/icons/icon16.png",
