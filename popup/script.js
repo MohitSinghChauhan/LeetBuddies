@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchUserData(username) {
         try {
-            const res = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
+            const res = await fetch(`https://leetcode-stats-api-qgnk.onrender.com/${username}`);
             const data = await res.json();
             return data;
         } catch (e) {

@@ -13,7 +13,7 @@
     "storage"
   ],
   "host_permissions": [
-    "https://leetcode-stats-api.herokuapp.com/*",
+    "https://leetcode-stats-api-qgnk.onrender.com/*",
     "https://leetcard.jacoblin.cool/*"
   ],
   "action": {
